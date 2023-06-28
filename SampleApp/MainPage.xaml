@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:BindableGrid;assembly=BindableGrid"
+             xmlns:viewmodels="clr-namespace:SampleApp.ViewModels"
+             xmlns:res="clr-namespace:SampleApp.Resources"
+             x:Class="SampleApp.MainPage"
+             x:DataType="viewmodels:ColorSlidersViewModel"
+             >
+    <ContentPage.Resources>
+        <Style x:Key="SliderLabelStyle" TargetType="Label">
+            <Setter Property="HorizontalTextAlignment"
+                    Value="Start"/>
+            <Setter Property="VerticalTextAlignment"
+                    Value="Center"/>
+            <Setter Property="FontSize"
+                    Value="Medium"/>
+        </Style>
+
+        <Style x:Key="SliderValueStyle" TargetType="Label">
+            <Setter Property="HorizontalTextAlignment"
+                    Value="End"/>
+            <Setter Property="VerticalTextAlignment"
+                    Value="Center"/>
+            <Setter Property="FontSize"
+                    Value="Medium"/>
+        </Style>
+
+        <Style x:Key="SliderCommandStyle" TargetType="Label">
+            <Setter Property="FontFamily"
+                    Value="FluentUI"/>
+            <Setter Property="FontAttributes"
+                    Value="Bold"/>
+            <Setter Property="HorizontalTextAlignment"
+                    Value="Center"/>
+            <Setter Property="VerticalTextAlignment"
+                    Value="Center"/>
+            <Setter Property="Margin"
+                    Value="5,0,5,0"/>
+            <Setter Property="FontSize"
+                    Value="Medium"/>
+        </Style>
+
+        <DataTemplate x:Key="SliderLabel" x:DataType="viewmodels:SliderViewModel">
+            <Label Text="{Binding Name, Mode=OneWay}"
+                   Style="{StaticResource SliderLabelStyle}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SliderDecrease" x:DataType="viewmodels:SliderViewModel">
+            <Label Text="{x:Static res:FluentUI.ChevronLeftFilled}"
+                   Style="{StaticResource SliderCommandStyle}"
+                   ToolTipProperties.Text="{x:Static res:Strings.Decrease}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding DecrementCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SliderIncrease" x:DataType="viewmodels:SliderViewModel">
+            <Label Text="{x:Static res:FluentUI.ChevronRightFilled}"
+                   Style="{StaticResource SliderCommandStyle}"
+                   ToolTipProperties.Text="{x:Static res:Strings.Increase}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding IncrementCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SliderValue" x:DataType="viewmodels:SliderViewModel">
+            <Label Text="{Binding Value, StringFormat='{0,-3:N0}'}" 
+                   Style="{StaticResource SliderValueStyle}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="Slider" x:DataType="viewmodels:SliderViewModel">
+            <!-- NOTE: Define the Value binding AFTER Minimum and Maximum 
+                 or the results are unexpected during the initial binding.
+            -->
+            <Slider Maximum="{Binding Maximum}"
+                    Minimum="{Binding Minimum}"
+                    Value="{Binding Value}"
+                    HorizontalOptions="Fill"
+                    ToolTipProperties.Text="{Binding Description}"
+                    />
+        </DataTemplate>
+
+    </ContentPage.Resources>
+
+    <Grid Margin="5,5,5,5"
+          RowSpacing="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Illustrate the bindable Grid -->
+        <controls:Grid  Grid.Row="0" 
+                        RowHeight="Auto"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        ItemsSource="{Binding Sliders}"
+                        >
+            <controls:Grid.ColumnDefinitions>
+                <controls:ColumnDefinition Width="Auto"
+                                           ItemTemplate="{StaticResource SliderLabel}"/>
+                <controls:ColumnDefinition Width="Auto"
+                                           ItemTemplate="{StaticResource SliderDecrease}"/>
+                <controls:ColumnDefinition Width="*"
+                                           ItemTemplate="{StaticResource Slider}"/>
+                <controls:ColumnDefinition Width="Auto"
+                                           ItemTemplate="{StaticResource SliderIncrease}"/>
+                <controls:ColumnDefinition Width="Auto"
+                                           ItemTemplate="{StaticResource SliderValue}"/>
+            </controls:Grid.ColumnDefinitions>
+        </controls:Grid>
+        
+        <Border HorizontalOptions="Fill"
+                HeightRequest="40"
+                StrokeThickness="2"
+                StrokeLineCap="Round"
+                Stroke="LightGray"
+                Grid.Row="1"
+                >
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="5,5,5,5"/>
+            </Border.StrokeShape>
+            <Rectangle Fill="{Binding Color}"
+                       HorizontalOptions="Fill"
+                       VerticalOptions="Fill"
+                       ToolTipProperties.Text="{Binding ARGB}"
+                       />
+        </Border>
+    </Grid>
+</ContentPage>

@@ -8,7 +8,7 @@ and Alpha.
 For my first draft, I created a ContentView
 with Grid as the root and started spelling out the details for each slider.  
 
-Each slider needs a label for the Color component name, a Glyph to decrease the value, 
+Each slider needs a label for the Color component name, a glyph to decrease the value, 
 the slider itself, a glyph to increase the value, and finally a label displaying 
 the slider's value and the associated tool tips for the slider and the glyphs.
 
@@ -31,9 +31,9 @@ was much easier to manage and the code cleaned up nicely.
 The one issue I found with this approach is the component name labels cause the sliders
 to be unaligned.
 
-    Red < ----------------- > 255
+    Red < --------------------- > 0
     Green < ----------------- > 255
-    Blue < ----------------- > 255
+    Blue < -------------------- > 0
     Alpha < ----------------- > 255
 
 I made various attempts to solve this using a custom Label class that overrode
@@ -60,7 +60,7 @@ class that accepts a GridLength Width and an ItemTemplate.
 
 Grid.RowDefinitions is replaced with a simple RowHeight of type GridLength.
 
-RowSpacing and ColumnSpacing properties provide a rely to the encapsulated Grid
+RowSpacing and ColumnSpacing properties provide a relay to the encapsulated Grid
 properties.
 
 The UI presentation appears as follows:
@@ -77,7 +77,7 @@ includes the following:
 - Grid.xaml and Grid.xaml.cs - Grid control itself
 - ColumnDefinition - the custom column definition class for the grid.
 - ColumnDefinitionCollection - The collection of ColumnDefinition
-- ObservableObject - a simple INotifyPropertyChanged implementation.
+- ObservableObject - a simple INotifyPropertyChanged implementation with a SetProperty<T>.
 
 ## SampleApp
 Provides an example of using the BindableGrid to create a color editor for editing

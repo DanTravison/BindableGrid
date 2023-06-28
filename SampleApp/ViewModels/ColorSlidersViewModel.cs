@@ -30,6 +30,7 @@ public sealed class ColorSlidersViewModel : ObservableObject
     public ColorSlidersViewModel(Color color)
     {
         _color = color;
+        _argbText = Color.ToArgbHex();
         Sliders = new List<ColorSliderViewModel>()
         {
             new ColorSliderViewModel(ColorPart.Red, this),
@@ -63,10 +64,6 @@ public sealed class ColorSlidersViewModel : ObservableObject
             }
         }
     }
-
-    #endregion Properties
-
-    #region Properties
 
     /// <summary>
     /// Gets the <see cref="Color"/> as a ARGB hex string.

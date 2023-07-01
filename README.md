@@ -70,7 +70,7 @@ The UI presentation appears as follows:
 # The Code
 The repository contains two projects, SampleApp and BindableGrid.
 
-##3 BindableGrid
+## BindableGrid
 The code for the bindable grid resides in the BindableGrid project and 
 includes the following:
 

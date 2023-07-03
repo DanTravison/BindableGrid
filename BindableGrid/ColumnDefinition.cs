@@ -10,7 +10,7 @@ public sealed class ColumnDefinition : ObservableObject
 {
     #region Fields
 
-    GridLength _width;
+    ColumnWidth _width;
     DataTemplate _itemTemplate;
 
     #endregion Fields
@@ -20,14 +20,14 @@ public sealed class ColumnDefinition : ObservableObject
     /// </summary>
     public ColumnDefinition()
     {
-        _width = GridLength.Auto;
+        _width = ColumnWidth.Auto;
     }
 
     /// <summary>
     /// Initializes a new instance of this class.
     /// </summary>
-    /// <param name="width">The <see cref="GridLength"/> defining the width of the column.</param>
-    public ColumnDefinition(GridLength width)
+    /// <param name="width">The <see cref="ColumnWidth"/> defining the width of the column.</param>
+    public ColumnDefinition(ColumnWidth width)
     {
         _width = width;
     }
@@ -37,17 +37,14 @@ public sealed class ColumnDefinition : ObservableObject
     /// <summary>
     /// Gets or sets width of the column.
     /// </summary>
-    [TypeConverter(typeof(GridLengthTypeConverter))]
-    public GridLength Width
+    [TypeConverter(typeof(ColumnWidthTypeConverter))]
+    public ColumnWidth Width
     {
         get => _width;
         set
         {
-            if (!_width.Equals(value))
-            {
-                _width = value;
-                OnPropertyChanged(WidthChangedEventArgs);
-            }
+            _width = value;
+            OnPropertyChanged(WidthChangedEventArgs);
         }
     }
 

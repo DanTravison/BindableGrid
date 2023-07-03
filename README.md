@@ -39,38 +39,67 @@ to be unaligned.
 I made various attempts to solve this using a custom Label class that overrode
 Measure to force all the label widths to match mirror the Grid Width=Auto behavior.
 
-Unfortunately, I was not able to solve the text measuring issue.  Creating
-a Label in code and using it to measure my desired width worked fine on Windows
-but not at all on Android.  My attempts to use Skia to measure the text did 
-provide a reasonable starting point and using DisplayDensity to scale it 
-to Maui worked fine on Windows. Unfortunately, the results on the Android 
-simulator were very different and proved just as unusable.
-
-*As an aside, it would be GREAT if Maui provided a reusable MeasureText. This lack
-has thwarted my efforts in a number of cases.*
-
 After a couple of weeks going down these paths, I decided to investigate 
 sub-classing Grid, adding an ItemsSource for data binding and an DataTemplate
 for each column. It turned out that sub-classing was not an option, primarily
 due to ColumnDefinition being sealed. Additionally, I could not rationalize
 ColumnSpan and RowSpan with ItemsSource.
 
-The final solution uses encapsulation. I define a custom ColumnDefinition
-class that accepts a GridLength Width and an ItemTemplate.
+The final solution uses encapsulation. I defined a custom ColumnDefinition
+class that accepts a ColumnWidth and an ItemTemplate.
 
 Grid.RowDefinitions is replaced with a simple RowHeight of type GridLength.
 
-RowSpacing and ColumnSpacing properties provide a relay to the encapsulated Grid
+Grid.ColumnDefinitions replaces GridLength with a new ColumnWidth type. This type
+supports the expected GridLength patterns as well as two new patterns for calculating
+the width:
+
+- Literal - a literal string is used to calculate the absolute width.
+- Character Count - a count of characters is used to calculate the absolute width.
+
+These patterns are intended to be used as a absolute width alternative using 
+font metrics instead of device independent units.
+
+The RowSpacing and ColumnSpacing properties provide a relay to the encapsulated Grid
 properties.
 
-The UI presentation appears as follows:
+## Literal Column Width - #literal
+
+Syntax:
+#literal [, font family] [, font size] [, font attributes]
+
+The '#' character indicates a literal string and is followed immediately by the
+string to use to measure the text.  Optionally, font family, size, and attributes 
+may be provided to determine the font to use to measure the literal string.
+
+Example: Use '255' as the literal string and measure with the OpenSansRegular font with 
+a font size of 24pt.
+
+#255, OpenSansRegular, 18
+
+## Character Count Column Width - @count
+Syntax:
+@N [, font family] [, font size] [, font attributes]
+
+The '@' character indicates a character count and is followed immediately by the
+count of characters to use to measure the text. Optionally, font family, size, and attributes 
+may be provided to determine the font to use to measure the characters.
+
+Example: Define the width as 3 characters and measure with the OpenSansRegular font with 
+a font size of 24pt and font attribute of Bold.
+
+#255, OpenSansRegular, 18, Bold
+
+The UI presentation appears as follows. The slider's value is presented as two columns. The
+first uses the @255 literal while the second uses the @3 character count. When the sample is 
+run, note that the 2 rightmost columns remain a fixed width regardless of the value displayed. 
 
 ![Image](./ScreenShot.png?raw=true)
 
 # The Code
 The repository contains two projects, SampleApp and BindableGrid.
 
-##3 BindableGrid
+## BindableGrid
 The code for the bindable grid resides in the BindableGrid project and 
 includes the following:
 
@@ -78,6 +107,7 @@ includes the following:
 - ColumnDefinition - the custom column definition class for the grid.
 - ColumnDefinitionCollection - The collection of ColumnDefinition
 - ObservableObject - a simple INotifyPropertyChanged implementation with a SetProperty<T>.
+- TextUtilties - Encapsulates IStringSizeService to provide a text measurment using font attributes, horizontal and vertical alignment.
 
 ## SampleApp
 Provides an example of using the BindableGrid to create a color editor for editing
@@ -101,17 +131,9 @@ The ViewModels directory contains the view models for the underlying color selec
 
 - The project has only been tested on Windows. Further testing on iOS/MacCatalyst and Android is planned.
 
-- I still have the problem of MeasureText to solve. While ColumnWidth=Auto solved the alignment
-problem with the color component names, it does not solve the problem if the column contains
-dynamic text (e.g., the 'Value' column of the color slider).  You can see this issue
-when you run the example and set all sliders to one or two digit values. The right most column
-grows and shrinks as the value lengths grow and shrink.
+- When using Character Width and Literal text for column widths, verify they meet your needs.
 
-When I solve the MeasureText problem, I intend to extend ColumnDefinition to support a 
-logical character width to calculate at runtime a fixed column width based on 
-fixed count of characters.
+- Character Width column widths use 'W' as the repeating character and will produce a width that is greater than what Label.Measure returns for the average text of the same length.
 
-For example, to set the column width to 3 characters, the value might be '3@' 
-or perhaps '3#'.  It will also need to support FontFamily and FontSize as a minimum
-to ensure the column width is calculated using a consistent font metric.
+- Literal column widths do not match what Label.Measure returns for the same text. Additional testing is needed to determine where the difference is occurring
  

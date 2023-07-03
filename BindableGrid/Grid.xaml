@@ -26,7 +26,7 @@
                     Value="Center"/>
 
             <Setter Property="FontSize"
-                    Value="Medium"/>
+                    Value="12"/>
             <Setter Property="FontFamily"
                     Value="OpenSansRegular"/>
          </Style>

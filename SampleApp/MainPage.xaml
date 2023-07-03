@@ -14,7 +14,7 @@
             <Setter Property="VerticalTextAlignment"
                     Value="Center"/>
             <Setter Property="FontSize"
-                    Value="Medium"/>
+                    Value="18"/>
         </Style>
 
         <Style x:Key="SliderValueStyle" TargetType="Label">
@@ -23,7 +23,9 @@
             <Setter Property="VerticalTextAlignment"
                     Value="Center"/>
             <Setter Property="FontSize"
-                    Value="Medium"/>
+                    Value="18"/>
+            <Setter Property="LineBreakMode"
+                    Value="NoWrap"/>
         </Style>
 
         <Style x:Key="SliderCommandStyle" TargetType="Label">
@@ -38,7 +40,7 @@
             <Setter Property="Margin"
                     Value="5,0,5,0"/>
             <Setter Property="FontSize"
-                    Value="Medium"/>
+                    Value="18"/>
         </Style>
 
         <DataTemplate x:Key="SliderLabel" x:DataType="viewmodels:SliderViewModel">
@@ -108,7 +110,12 @@
                                            ItemTemplate="{StaticResource Slider}"/>
                 <controls:ColumnDefinition Width="Auto"
                                            ItemTemplate="{StaticResource SliderIncrease}"/>
-                <controls:ColumnDefinition Width="Auto"
+                <!-- Define the width based on a literal string  -->
+                <controls:ColumnDefinition Width="@255, OpenSansRegular, 18"
+                                           ItemTemplate="{StaticResource SliderValue}"/>
+
+                <!-- Define the width based on a character count. -->
+                <controls:ColumnDefinition Width="#3, OpenSansRegular, 18"
                                            ItemTemplate="{StaticResource SliderValue}"/>
             </controls:Grid.ColumnDefinitions>
         </controls:Grid>

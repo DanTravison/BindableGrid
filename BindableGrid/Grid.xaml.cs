@@ -52,7 +52,7 @@ public partial class Grid : ContentView
     /// <summary>
     /// Gets or sets height of each row.
     /// </summary>
-    [TypeConverter(typeof(GridLengthTypeConverter))]
+    [TypeConverter(typeof(Microsoft.Maui.Controls.GridLengthTypeConverter))]
     public GridLength RowHeight
     {
         get { return (GridLength)GetValue(RowHeightProperty); }
@@ -139,7 +139,7 @@ public partial class Grid : ContentView
             case NotifyCollectionChangedAction.Add:
                 column = (ColumnDefinition)e.NewItems[0];
                 column.PropertyChanged += OnColumnChanged;
-                CoreGrid.ColumnDefinitions.Add(new(column.Width));
+                CoreGrid.ColumnDefinitions.Add(new(column.Width.ToGridLength()));
                 break;
             case NotifyCollectionChangedAction.Remove:
                 column = (ColumnDefinition)e.OldItems[0];
@@ -165,7 +165,7 @@ public partial class Grid : ContentView
         if (sender is ColumnDefinition column)
         {
             int index = ColumnDefinitions.IndexOf(column);
-            CoreGrid.ColumnDefinitions[index] = new(column.Width);
+            CoreGrid.ColumnDefinitions[index] = new(column.Width.ToGridLength());
             Populate();
         }
     }
@@ -182,7 +182,7 @@ public partial class Grid : ContentView
             Microsoft.Maui.Controls.ColumnDefinitionCollection columns = new();
             foreach (ColumnDefinition definition in ColumnDefinitions)
             {
-                Microsoft.Maui.Controls.ColumnDefinition column = new(definition.Width);
+                Microsoft.Maui.Controls.ColumnDefinition column = new(definition.Width.ToGridLength());
                 columns.Add(column);
             }
             CoreGrid.ColumnDefinitions = columns;
